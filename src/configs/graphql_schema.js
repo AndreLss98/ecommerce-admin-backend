@@ -9,8 +9,9 @@ const {
     GraphQLObjectType
 } = require('graphql');
 
-const Users = require('./../repositorys/user');
-const Credits = require('./../repositorys/credits');
+const UserRepo = require('./../repositorys/user');
+const CreditRepo = require('./../repositorys/credits');
+const DownloadUrlRepo = require('./../repositorys/download_url');
 
 const User = new GraphQLObjectType({
     name: "Usuario",
@@ -32,10 +33,15 @@ const User = new GraphQLObjectType({
         },
         CreditosUsados: {
             type: new GraphQLList(CreditLog),
-            resolve({ShopifyCustomerNumber}, _) {
-                return Credits.getAllByCustomerID(ShopifyCustomerNumber);
+            resolve({ ShopifyCustomerNumber }, _) {
+                return CreditRepo.getAllByCustomerID(ShopifyCustomerNumber);
             }
-
+        },
+        LinksDownload: {
+            type: new GraphQLList(DownloadUrls),
+            resolve({ ShopifyCustomerNumber }, _) {
+                return DownloadUrlRepo.getAllByUserId(ShopifyCustomerNumber);
+            }
         }
     })
 });
@@ -58,6 +64,24 @@ const CreditLog = new GraphQLObjectType({
     })
 });
 
+const DownloadUrls = new GraphQLObjectType({
+    name: "DownloadUrl",
+    fields: () => ({
+        ItemTitle: {
+            type: GraphQLString
+        },
+        LinkGuid: {
+            type: GraphQLString
+        },
+        CreditsUsed: {
+            type: GraphQLString
+        },
+        Used: {
+            type: GraphQLInt
+        }
+    })
+});
+
 const schema = new GraphQLSchema({
     query: new GraphQLObjectType({
         name: "RootQueryType",
@@ -70,7 +94,7 @@ const schema = new GraphQLSchema({
                     }
                 },
                 resolve(_, args) {
-                    return Users.getByEmail(args.CustomerEmail);
+                    return UserRepo.getByEmail(args.CustomerEmail);
                 }
             }
         }
