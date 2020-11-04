@@ -4,9 +4,8 @@ const {
     GraphQLFloat,
     GraphQLString,
     GraphQLSchema,
-    GraphQLBoolean,
     GraphQLNonNull,
-    GraphQLObjectType
+    GraphQLObjectType,
 } = require('graphql');
 
 const UserRepo = require('./../repositorys/user');
@@ -95,6 +94,20 @@ const schema = new GraphQLSchema({
                 },
                 resolve(_, args) {
                     return UserRepo.getByEmail(args.CustomerEmail);
+                }
+            },
+            credits: {
+                type: new GraphQLList(CreditLog),
+                args: {
+                    start: {
+                        type: new GraphQLNonNull(GraphQLString)
+                    },
+                    end: {
+                        type: GraphQLString
+                    }
+                },
+                resolve(_, args) {
+                    return CreditRepo.getAllInInteval(args.start, args.end);
                 }
             }
         }
