@@ -7,7 +7,8 @@ async function getAllByCustomerID(CustomerID) {
 }
 
 async function getAllInInteval(startDate, endDate) {
-    let query = endDate && startDate !== endDate? db(TABLE).whereBetween('UsageDate', [startDate, endDate]) : db(TABLE).where('UsageDate', '>=', startDate);
+    let query = endDate && startDate !== endDate? db(TABLE).andWhere({ CreditsUsed: 1 }).whereBetween('UsageDate', [startDate, endDate]) :
+        db(TABLE).where('UsageDate', '>=', startDate).andWhere({ CreditsUsed: 1 });
     return await query.orderBy('UsageDate', 'desc');
 }
 
