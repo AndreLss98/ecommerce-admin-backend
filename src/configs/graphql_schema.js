@@ -56,9 +56,6 @@ const CreditLog = new GraphQLObjectType({
         },
         UsageDate: {
             type: GraphQLString
-        },
-        CreditsUsed: {
-            type: GraphQLInt
         }
     })
 });
