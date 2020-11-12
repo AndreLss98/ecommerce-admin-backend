@@ -8,7 +8,7 @@ async function getProductsOfBundle(BundleProductID) {
     let products = [];
 
     for (let { ProductID } of productsIDS) {
-        products.push(await db(TABLE).where({ ProductID }).first());
+        products.push(await db.select('ProductID', 'Handle').from(TABLE).where({ ProductID }).first());
     }
 
     return products;
