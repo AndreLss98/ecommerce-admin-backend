@@ -1,3 +1,4 @@
+const axios = require('axios');
 const db = require('./../configs/knex');
 
 const TABLE = 'ProductLookup';
@@ -14,6 +15,20 @@ async function getProductsOfBundle(BundleProductID) {
     return products;
 }
 
+async function getBundle(BundleHandle) {
+    return await axios({
+        method: 'get',
+        url: `https://lenofx.com/products/${BundleHandle}.json`
+    }).then(async (response) => {
+        let bundle = response.data.product;
+        bundle.plugins = await getProductsOfBundle(bundle.id);
+        return bundle;
+    }, (error) => {
+        throw error.data;
+    });
+}
+
 module.exports = {
-    getProductsOfBundle
+    getProductsOfBundle,
+    getBundle
 }
