@@ -9,7 +9,8 @@ async function getProductsOfBundle(BundleProductID) {
     let products = [];
 
     for (let { ProductID } of productsIDS) {
-        products.push(await db.select('ProductID', 'Handle').from(TABLE).where({ ProductID }).first());
+        const temp = await db.select('ProductID', 'Handle').from(TABLE).where({ ProductID }).first();
+        if(temp) products.push(temp);
     }
 
     return products;
@@ -28,7 +29,24 @@ async function getBundle(BundleHandle) {
     });
 }
 
+async function save(BundleProductID, Products) {
+    const oldProducts = (await db.select('ProductID').from(RELATION_BUNDLE_TABLE).where({ BundleProductID }))
+        .map(el => el.ProductID);
+
+    const forSave = Products.filter(el => !oldProducts.includes(el));
+    const forDelete = oldProducts.filter(el => !Products.includes(el));
+    
+    for (let ProductID of forSave) {
+        await db(RELATION_BUNDLE_TABLE).insert({ BundleProductID, ProductID });
+    }
+
+    for (let ProductID of forDelete) {
+        await db(RELATION_BUNDLE_TABLE).where({ BundleProductID, ProductID }).delete();
+    }
+}
+
 module.exports = {
     getProductsOfBundle,
-    getBundle
+    getBundle,
+    save
 }

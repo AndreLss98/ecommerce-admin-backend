@@ -10,4 +10,10 @@ router.get('/bundle/:handle', async (req, res, next) => {;
     return res.status(200).send(await ProductsRepository.getBundle(req.params.handle));
 });
 
+router.post('/bundle', async (req, res, next) => {
+    const { BundleID, Products } = req.body;
+    ProductsRepository.save(BundleID, Products);
+    return res.status(200).send({ response: 'Ok' });
+});
+
 module.exports = app => app.use('/products', router);
