@@ -12,8 +12,9 @@ routes.post('/login', async (req, res, next) => {
     const { Email, Senha } = req.body;
     const user = await UserRepository.getAdminUser(Email);
 
-    if (!user) return res.status(400).send({ error: "User not found" });
-    if (!await bcrypt.compare(Senha, user.Hash)) return res.status(400).send({ error: "Invalid password" });
+    if (!user) return res.status(400).send({ message: "Usuário não encontrado." });
+    if (!await bcrypt.compare(Senha, user.Hash)) return res.status(400).send({ message: "Senha inválida" });
+    if (!user.Aceito) return res.status(400).send({ message: "Cadastro em análise" });
 
     if (user) {
         return res.cookie(SESS_ID, authFunctions.generateJWT({ userID: user.Id, userName: user.Nome }), {
@@ -23,7 +24,7 @@ routes.post('/login', async (req, res, next) => {
             secure: false
         }).status(200).send({ Id: user.Id, Nome: user.Nome });
     } else {
-        return res.status(400).send({ error: "Auth Failed" });
+        return res.status(400).send({ message: "Falha na autenticação." });
     }
 });
 
