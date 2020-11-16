@@ -16,12 +16,12 @@ routes.post('/login', async (req, res, next) => {
     const userExists = _mockUsers.find(user => user.email === email && user.senha === senha);
 
     if (userExists) {
-        return res.cookie(SESS_ID, authFunctions.generateJWT({ userID: user.id }), {
+        return res.cookie(SESS_ID, authFunctions.generateJWT({ userID: userExists.id, userName: userExists.name }), {
             maxAge: parseInt(SESS_LIFETIME),
             httpOnly: true,
             sameSite: true,
             secure: false
-        }).status(200).send({ userID: userExists.id });
+        }).status(200).send({ userID: userExists.id, userName: userExists.name });
     } else {
         return res.status(400).send({ error: "Auth Failed" });
     }
