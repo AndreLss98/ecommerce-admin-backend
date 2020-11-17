@@ -1,12 +1,14 @@
 const router = require('express').Router();
 
+const authMiddleware = require('./../middlewares/authentication');
+
 const ProductsRepository = require('./../repositorys/products');
 
 router.get('/bundle-products/:idBundle', async (req, res, next) => {
     return res.status(200).send(await ProductsRepository.getProductsOfBundle(req.params.idBundle));
 });
 
-router.get('/bundle/:handle', async (req, res, next) => {;
+router.get('/bundle/:handle', authMiddleware(), async (req, res, next) => {
     return res.status(200).send(await ProductsRepository.getBundle(req.params.handle));
 });
 

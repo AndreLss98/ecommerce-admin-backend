@@ -7,7 +7,7 @@ const {
 
 function generateJWT(params = {}) {
     return jwt.sign(params, SESS_SECRET_KEY, {
-        expiresIn: SESS_LIFETIME 
+        expiresIn: SESS_LIFETIME
     });
 }
 

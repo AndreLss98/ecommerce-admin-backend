@@ -5,6 +5,7 @@ const authFunctions = require('./../shared/authentication');
 
 const {
     SESS_ID,
+    ENV,
     SESS_LIFETIME
 } = process.env;
 
@@ -18,10 +19,10 @@ routes.post('/login', async (req, res, next) => {
 
     if (user) {
         return res.cookie(SESS_ID, authFunctions.generateJWT({ userID: user.Id, userName: user.Nome }), {
-            maxAge: parseInt(SESS_LIFETIME),
+            maxAge: 15000,
             httpOnly: true,
-            sameSite: true,
-            secure: false
+            sameSite: 'lax',
+            secure: ENV === 'prod'? true : false,
         }).status(200).send({ Id: user.Id, Nome: user.Nome });
     } else {
         return res.status(400).send({ message: "Falha na autenticação." });
