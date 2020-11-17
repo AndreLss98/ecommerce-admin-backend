@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const routes = require('express').Router();
 const UserRepository = require('../repositorys/user');
+const authentication = require('./../middlewares/authentication');
 const authFunctions = require('./../shared/authentication');
 
 const {
@@ -23,7 +24,7 @@ routes.post('/login', async (req, res, next) => {
             httpOnly: true,
             sameSite: 'lax',
             secure: ENV === 'prod'? true : false,
-        }).status(200).send({ Id: user.Id, Nome: user.Nome });
+        }).status(200).send({ Id: user.Id, Nome: user.Nome, ExpiresAt: parseInt(SESS_LIFETIME) });
     } else {
         return res.status(400).send({ message: "Falha na autenticação." });
     }
@@ -39,6 +40,15 @@ routes.post('/signup', async (req, res, next) => {
     } catch (trace) {
         return res.status(400).send({ message: "Falha no cadastro", trace });
     }
+});
+
+routes.post('/refresh-session', authentication(), async (req, res, next) => {
+    return res.cookie(SESS_ID, authFunctions.generateJWT({ userID: req.user.Id, userName: req.user.Nome }), {
+        maxAge: parseInt(SESS_LIFETIME),
+        httpOnly: true,
+        sameSite: 'lax',
+        secure: ENV === 'prod'? true : false,
+    }).status(200).send({ Id: req.user.Id, Nome: req.user.Nome, ExpiresAt: parseInt(SESS_LIFETIME) });
 });
 
 module.exports = app => app.use('/auth', routes);
