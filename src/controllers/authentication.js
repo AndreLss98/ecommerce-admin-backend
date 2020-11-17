@@ -11,7 +11,7 @@ const {
 
 routes.post('/login', async (req, res, next) => {
     const { Email, Senha } = req.body;
-    const user = await UserRepository.getAdminUser(Email);
+    const user = await UserRepository.getAdminUser({ Email });
 
     if (!user) return res.status(400).send({ message: "Usuário não encontrado." });
     if (!await bcrypt.compare(Senha, user.Hash)) return res.status(400).send({ message: "Senha inválida" });
@@ -19,7 +19,7 @@ routes.post('/login', async (req, res, next) => {
 
     if (user) {
         return res.cookie(SESS_ID, authFunctions.generateJWT({ userID: user.Id, userName: user.Nome }), {
-            maxAge: 15000,
+            maxAge: parseInt(SESS_LIFETIME),
             httpOnly: true,
             sameSite: 'lax',
             secure: ENV === 'prod'? true : false,

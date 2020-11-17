@@ -7,10 +7,15 @@ const {
 
 function generateJWT(params = {}) {
     return jwt.sign(params, SESS_SECRET_KEY, {
-        expiresIn: SESS_LIFETIME
+        expiresIn: parseInt(SESS_LIFETIME) / 1000
     });
 }
 
+function decodeJwtToken(token) {
+    return jwt.decode(token);
+}
+
 module.exports = {
-    generateJWT
+    generateJWT,
+    decodeJwtToken,
 }

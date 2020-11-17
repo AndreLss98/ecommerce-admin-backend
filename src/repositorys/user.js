@@ -8,8 +8,8 @@ async function getByEmail(CustomerEmail) {
     return await db(TABLE).where({ CustomerEmail }).first();
 }
 
-async function getAdminUser(Email) {
-    return await db(ADMIN_TABLE).where({ Email }).first();
+async function getAdminUser(search_key) {
+    return await db(ADMIN_TABLE).where(search_key).first();
 }
 
 async function saveAdminUser(user) {

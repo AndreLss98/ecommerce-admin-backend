@@ -6,18 +6,19 @@ const {
 
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const helmet = require('helmet');
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const app = express();
 const { graphqlHTTP } = require('express-graphql');
 
 const hostsWhiteList = [
-    'http://localhost:4200'
+    'http://localhost:4200',
+    'https://painel.lenofx.com'
 ];
 
-app.use(async (req, res, next) => {
-    console.log(req.cookies);
-    next();
-})
+app.use(helmet());
+app.use(cookieParser());
 
 app.use(cors({
     credentials: true,
