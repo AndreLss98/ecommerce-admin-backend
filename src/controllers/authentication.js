@@ -23,7 +23,7 @@ routes.post('/login', async (req, res, next) => {
             maxAge: parseInt(SESS_LIFETIME),
             httpOnly: true,
             sameSite: 'lax',
-            secure: ENV === 'prod'? true : false,
+            secure: false,
         }).status(200).send({ Id: user.Id, Nome: user.Nome, ExpiresAt: parseInt(SESS_LIFETIME) });
     } else {
         return res.status(400).send({ message: "Falha na autenticação." });
@@ -47,7 +47,7 @@ routes.post('/refresh-session', authentication(), async (req, res, next) => {
         maxAge: parseInt(SESS_LIFETIME),
         httpOnly: true,
         sameSite: 'lax',
-        secure: ENV === 'prod'? true : false,
+        secure: false,
     }).status(200).send({ Id: req.user.Id, Nome: req.user.Nome, ExpiresAt: parseInt(SESS_LIFETIME) });
 });
 
