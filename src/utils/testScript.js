@@ -1,0 +1,1 @@
+(async () => { console.log('Hellou') })();
