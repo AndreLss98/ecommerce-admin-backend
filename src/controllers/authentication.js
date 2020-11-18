@@ -32,7 +32,7 @@ routes.post('/login', async (req, res, next) => {
 
 routes.post('/signup', async (req, res, next) => {
     const { Email, Senha, Nome } = req.body;
-    const checkUser = await UserRepository.getAdminUser(Email);
+    const checkUser = await UserRepository.getAdminUser({ Email });
     if (checkUser) return res.status(400).send({ message: "Usuário já cadastrado" });
 
     try {
