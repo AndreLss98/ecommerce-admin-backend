@@ -18,8 +18,6 @@ const hostsWhiteList = [
 ];
 
 app.use(helmet());
-app.use(cookieParser());
-
 app.use(cors({
     credentials: true,
     allowedHeaders: 'Content-Type, Authorization, Access-Control-Allow-Credentials',
@@ -31,11 +29,19 @@ app.use(cors({
         }
     }
 }));
+app.use(cookieParser());
 
 const schema = require('./configs/graphql_schema');
 app.use('/graphql', graphqlHTTP({ schema, graphiql: true }));
 
-app.use(bodyParser.json());
+app.use(bodyParser.json({
+    verify: (req, res, buffer, enconding) => {
+        if (buffer && buffer.length) {
+            req.rawBody = buffer.toString(enconding || 'utf8');
+        }
+    }
+}));
+
 require('./controllers')(app);
 
 app.listen(PORT, () => {

@@ -29,7 +29,7 @@ async function getBundle(BundleHandle) {
     });
 }
 
-async function save(BundleProductID, Products) {
+async function saveBundles(BundleProductID, Products) {
     const oldProducts = (await db.select('ProductID').from(RELATION_BUNDLE_TABLE).where({ BundleProductID }))
         .map(el => el.ProductID);
 
@@ -45,8 +45,17 @@ async function save(BundleProductID, Products) {
     }
 }
 
+async function updateFromWebHook(ProductID, Product) {
+    try {
+        return await db(TABLE).update(Product).where({ ProductID });
+    } catch (error) {
+        throw error;
+    }
+}
+
 module.exports = {
-    getProductsOfBundle,
     getBundle,
-    save
+    saveBundles,
+    updateFromWebHook,
+    getProductsOfBundle,
 }
