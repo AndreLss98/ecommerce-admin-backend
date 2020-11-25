@@ -24,8 +24,17 @@ async function saveAdminUser(user) {
     }
 }
 
+async function setCreditsOfUser(CustomerID, Credits) {
+    try {
+        return await db(TABLE).update({ Credits }).where({ CustomerID });
+    } catch (error) {
+        throw error;
+    }
+}
+
 module.exports = {
     getByEmail,
     getAdminUser,
-    saveAdminUser
+    saveAdminUser,
+    setCreditsOfUser
 }
