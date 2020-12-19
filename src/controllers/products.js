@@ -25,4 +25,18 @@ router.post('/webhook/product-update', webhookAuth(), async (req, res, next) => 
     return res.status(200).send({ response: 'Webhook notificado com sucesso.' });
 });
 
+router.post('/validate-purchase', async (req, res, next) => {
+    const { Customer, ItemID } = req.body;
+    try {
+        return res.status(200).send({
+            response: await ProductsRepository.checkPurchase(Customer, ItemID)
+        });
+    } catch (trace) {
+        return res.status(400).send({
+            message: "Error on validate purchase",
+            trace
+        })
+    }
+});
+
 module.exports = app => app.use('/products', router);

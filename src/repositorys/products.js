@@ -53,9 +53,19 @@ async function updateFromWebHook(ProductID, Product) {
     }
 }
 
+async function checkPurchase(Customer, ItemID) {
+    try {
+        const check = await db('DownloadLinks').where({ Customer, ItemID });
+        return check.length == 0 ? false : true;
+    } catch (error) {
+        throw error;
+    }
+}
+
 module.exports = {
     getBundle,
     saveBundles,
+    checkPurchase,
     updateFromWebHook,
     getProductsOfBundle,
 }
