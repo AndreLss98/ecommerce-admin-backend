@@ -25,6 +25,9 @@ router.post('/webhook/product-update', webhookAuth(), async (req, res, next) => 
     return res.status(200).send({ response: 'Webhook notificado com sucesso.' });
 });
 
+/**
+ * Check if a user already purchase a plugin
+ */
 router.post('/validate-purchase', async (req, res, next) => {
     const { Customer, ItemID } = req.body;
     try {

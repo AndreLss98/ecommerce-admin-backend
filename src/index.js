@@ -14,7 +14,8 @@ const { graphqlHTTP } = require('express-graphql');
 
 const hostsWhiteList = [
     'http://localhost:4200',
-    'https://painel.lenofx.com'
+    'https://painel.lenofx.com',
+    'https://lenofx.com'
 ];
 
 app.use(helmet());
