@@ -8,6 +8,10 @@ async function getByEmail(CustomerEmail) {
     return await db(TABLE).where({ CustomerEmail }).first();
 }
 
+async function search(search_key) {
+    return await db(TABLE).where(search_key).first();
+}
+
 async function getAdminUser(search_key) {
     return await db(ADMIN_TABLE).where(search_key).first();
 }
@@ -33,6 +37,7 @@ async function setCreditsOfUser(CustomerID, Credits) {
 }
 
 module.exports = {
+    search,
     getByEmail,
     getAdminUser,
     saveAdminUser,

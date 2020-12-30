@@ -30,6 +30,7 @@ router.post('/webhook/product-update', webhookAuth(), async (req, res, next) => 
  */
 router.post('/validate-purchase', async (req, res, next) => {
     const { Customer, ItemID } = req.body;
+
     try {
         return res.status(200).send({
             response: await ProductsRepository.checkPurchase(Customer, ItemID)

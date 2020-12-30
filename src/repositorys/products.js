@@ -9,7 +9,7 @@ async function getProductsOfBundle(BundleProductID) {
     let products = [];
 
     for (let { ProductID } of productsIDS) {
-        const temp = await db.select('ProductID', 'Handle').from(TABLE).where({ ProductID }).first();
+        const temp = await db.select('ProductID', 'Handle', 'Title').from(TABLE).where({ ProductID }).first();
         if(temp) products.push(temp);
     }
 
