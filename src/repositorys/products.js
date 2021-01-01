@@ -67,5 +67,5 @@ module.exports = {
     saveBundles,
     checkPurchase,
     updateFromWebHook,
-    getProductsOfBundle,
+    getProductsOfBundle
 }
