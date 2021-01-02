@@ -41,6 +41,7 @@ router.post('/webhook/order-create', async (req, res, next) => {
     } */
 
     try {
+        indecx.seLocaleTimeOfAction(customer.default_address.city);
         for (let product of line_items) {
             await indecx.registerAction('MEA30N', {
                 Nome: `${customer.first_name} ${customer.last_name}`,
