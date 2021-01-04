@@ -10,9 +10,15 @@ const OrderRepository = require('./../repositorys/download_url');
 // webhookAuth()
 
 router.post('/webhook/order-create', async (req, res, next) => {
-    const { id, created_at, name, total_price, line_items, customer } = req.body;
+    const {
+        id,
+        created_at,
+        name,
+        total_price,
+        line_items, customer
+    } = req.body;
     const user = await UserRepository.getByEmail(customer.email);
-    /* try {
+    try {
         for (let product of line_items) {
             if (product.title.toLowerCase().includes('pack')) {
                 const productsOfBundle = await ProductRepository.getProductsOfBundle(product.product_id);
@@ -38,10 +44,9 @@ router.post('/webhook/order-create', async (req, res, next) => {
            message: "Order create failed",
            trace
         });
-    } */
+    }
 
     try {
-        indecx.seLocaleTimeOfAction(customer.default_address.city);
         for (let product of line_items) {
             await indecx.registerAction('MEA30N', {
                 Nome: `${customer.first_name} ${customer.last_name}`,
@@ -52,10 +57,11 @@ router.post('/webhook/order-create', async (req, res, next) => {
                 IdOrder: name,
                 DAY: created_at.substr(0, created_at.lastIndexOf('T')),
                 TOTAL: total_price
-            });
+            }, indecx.setLocaleTimeOfAction(customer.default_address.city));
         }
     } catch (trace) {
         // ToDo: Register indecx failed in a log file
+        console.log(trace);
     }
 
     return res.status(200).send(user);
