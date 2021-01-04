@@ -7,9 +7,7 @@ const UserRepository = require('./../repositorys/user');
 const ProductRepository = require('./../repositorys/products');
 const OrderRepository = require('./../repositorys/download_url');
 
-// webhookAuth()
-
-router.post('/webhook/order-create', async (req, res, next) => {
+router.post('/webhook/order-create', webhookAuth(), async (req, res, next) => {
     const {
         id,
         created_at,
