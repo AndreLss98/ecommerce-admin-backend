@@ -15,12 +15,11 @@ function setLocaleTimeOfAction(city_name) {
     
     let currentDate = moment().add(1, 'days');
     
-    for (let qtdDias = 1; qtdDias !== 5; null) {
+    for (let qtdDias = 1; qtdDias < 5; null) {
+        currentDate.add(1, 'day');
         if (currentDate.day() !== 0 && currentDate.day() !== 6) {
             ++qtdDias;
         }
-
-        currentDate.add(1, 'day');
     }
 
     currentDate = `${currentDate.format('YYYY-MM-DD')}`;
@@ -33,9 +32,10 @@ async function registerAction(identificador, body, scheduling) {
         method: 'POST',
         url: `${base_url}/send/${identificador}`,
         headers: {
-            'company-key': INDECX_API_KEY
+            'company-key': INDECX_API_KEY,
+            'Content-Type': 'application/json'
         },
-        data: body
+        data: JSON.stringify(body)
     }).then(async (response) => {
        if (response.status == 200) {
         return true;

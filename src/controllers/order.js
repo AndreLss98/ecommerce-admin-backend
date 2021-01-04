@@ -7,7 +7,7 @@ const UserRepository = require('./../repositorys/user');
 const ProductRepository = require('./../repositorys/products');
 const OrderRepository = require('./../repositorys/download_url');
 
-router.post('/webhook/order-create', webhookAuth(), async (req, res, next) => {
+router.post('/webhook/order-create', async (req, res, next) => {
     const {
         id,
         created_at,
@@ -47,14 +47,13 @@ router.post('/webhook/order-create', webhookAuth(), async (req, res, next) => {
     try {
         for (let product of line_items) {
             await indecx.registerAction('MEA30N', {
-                Nome: `${customer.first_name} ${customer.last_name}`,
-                Email: customer.email,
-                Telefone: '',
-                PRODUCT: product.title,
-                COUNTRY: customer.default_address.country,
-                IdOrder: name,
-                DAY: created_at.substr(0, created_at.lastIndexOf('T')),
-                TOTAL: total_price
+                nome: `${customer.first_name} ${customer.last_name}`,
+                email: customer.email,
+                telefone: '',
+                product: product.title,
+                country: customer.default_address.country,
+                order_name: name,
+                day: created_at.substr(0, created_at.lastIndexOf('T')),
             }, indecx.setLocaleTimeOfAction(customer.default_address.city));
         }
     } catch (trace) {
