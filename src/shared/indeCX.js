@@ -10,7 +10,7 @@ const base_url = 'https://indecx.com/v2';
 function setLocaleTimeOfAction(city_name) {
     const city = cityTimezones.lookupViaCity(city_name);
     const timezone = ct.getTimezone(city[0].timezone);
-    let hours = 10 + (timezone.utcOffset / 60);
+    let hours = 10 - (timezone.utcOffset / 60);
     hours = `${('0' + hours).slice(-2)}:00:00.000`;
     
     let currentDate = moment().add(1, 'days');
