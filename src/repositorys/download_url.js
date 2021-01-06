@@ -9,6 +9,7 @@ async function getAllByUserId(Customer) {
 }
 
 async function registerOrder(Customer, ItemID, OrderID, ItemTitle, ItemNumber, CreditsUsed = 0, MemberLevel) {
+
     try {
         await db(TABLE).insert({
             LinkGuid: uuidv4(),

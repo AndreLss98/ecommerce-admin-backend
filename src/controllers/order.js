@@ -1,3 +1,4 @@
+const bunyam = require('bunyan');
 const router = require('express').Router();
 
 const indecx = require('./../shared/indeCX');
@@ -6,6 +7,20 @@ const webhookAuth = require('./../middlewares/webhookAuth');
 const UserRepository = require('./../repositorys/user');
 const ProductRepository = require('./../repositorys/products');
 const OrderRepository = require('./../repositorys/download_url');
+
+const log = bunyam.createLogger({
+    name: 'Order',
+    streams: [
+        {
+            level: 'info',
+            stream: process.stdout
+        },
+        {
+            level: 'error',
+            path: '/var/tmp/order-error.log'
+        }
+    ]
+});
 
 router.post('/webhook/order-create', async (req, res, next) => {
     const {
@@ -16,6 +31,7 @@ router.post('/webhook/order-create', async (req, res, next) => {
         line_items, customer
     } = req.body;
     const user = await UserRepository.getByEmail(customer.email);
+    
     try {
         for (let product of line_items) {
             if (product.title.toLowerCase().includes('pack')) {
@@ -38,6 +54,7 @@ router.post('/webhook/order-create', async (req, res, next) => {
             }
         }
     } catch (trace) {
+        log.error(trace);
         return res.status(400).send({
            message: "Order create failed",
            trace
@@ -54,11 +71,10 @@ router.post('/webhook/order-create', async (req, res, next) => {
                 country: customer.default_address.country,
                 order_name: name,
                 day: created_at.substr(0, created_at.lastIndexOf('T')),
-            }, indecx.setLocaleTimeOfAction(customer.default_address.city));
+            }, indecx.setLocaleTimeOfAction(customer.default_address.city, customer.default_address.province_code, customer.default_address.country_code));
         }
     } catch (trace) {
-        // ToDo: Register indecx failed in a log file
-        console.log(trace);
+        log.error(trace);
     }
 
     return res.status(200).send(user);

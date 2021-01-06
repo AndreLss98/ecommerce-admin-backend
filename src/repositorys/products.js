@@ -30,18 +30,22 @@ async function getBundle(BundleHandle) {
 }
 
 async function saveBundles(BundleProductID, Products) {
-    const oldProducts = (await db.select('ProductID').from(RELATION_BUNDLE_TABLE).where({ BundleProductID }))
+    try {
+        const oldProducts = (await db.select('ProductID').from(RELATION_BUNDLE_TABLE).where({ BundleProductID }))
         .map(el => el.ProductID);
 
-    const forSave = Products.filter(el => !oldProducts.includes(el));
-    const forDelete = oldProducts.filter(el => !Products.includes(el));
+        const forSave = Products.filter(el => !oldProducts.includes(el));
+        const forDelete = oldProducts.filter(el => !Products.includes(el));
     
-    for (let ProductID of forSave) {
-        await db(RELATION_BUNDLE_TABLE).insert({ BundleProductID, ProductID });
-    }
+        for (let ProductID of forSave) {
+            await db(RELATION_BUNDLE_TABLE).insert({ BundleProductID, ProductID });
+        }
 
-    for (let ProductID of forDelete) {
-        await db(RELATION_BUNDLE_TABLE).where({ BundleProductID, ProductID }).delete();
+        for (let ProductID of forDelete) {
+            await db(RELATION_BUNDLE_TABLE).where({ BundleProductID, ProductID }).delete();
+        }
+    } catch (error) {
+        throw error;
     }
 }
 
