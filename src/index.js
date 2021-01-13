@@ -4,6 +4,7 @@ const {
     PORT
 } = process.env;
 
+const fs = require('fs');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const helmet = require('helmet');
@@ -46,5 +47,9 @@ app.use(bodyParser.json({
 require('./controllers')(app);
 
 app.listen(PORT, () => {
+    if (!fs.existsSync('./public/tmp/csv/')) {
+        fs.mkdirSync('./public/tmp/csv/', { recursive: true });
+    }
+
     console.log(`App listen on port ${PORT}`);
 });
