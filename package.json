@@ -28,6 +28,7 @@
     "graphql": "^15.3.0",
     "graphql-tools": "^6.2.4",
     "helmet": "^4.2.0",
+    "jsonexport": "^3.2.0",
     "jsonwebtoken": "^8.5.1",
     "knex": "^0.21.6",
     "moment": "^2.29.1",
