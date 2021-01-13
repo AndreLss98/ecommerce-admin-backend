@@ -56,6 +56,12 @@ const CreditLog = new GraphQLObjectType({
         },
         UsageDate: {
             type: GraphQLString
+        },
+        Customer: {
+            type: User,
+            resolve({ CustomerID }, _) {
+                return UserRepo.search({ ShopifyCustomerNumber: CustomerID });
+            }
         }
     })
 });
@@ -101,10 +107,13 @@ const schema = new GraphQLSchema({
                     },
                     end: {
                         type: GraphQLString
+                    },
+                    itemID: {
+                        type: GraphQLFloat
                     }
                 },
                 resolve(_, args) {
-                    return CreditRepo.getAllInInteval(args.start, args.end);
+                    return CreditRepo.getAllInInteval(args.start, args.end, args.itemID);
                 }
             }
         }
