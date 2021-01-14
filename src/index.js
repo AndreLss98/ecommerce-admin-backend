@@ -34,8 +34,6 @@ app.use(cors({
 }));
 app.use(cookieParser());
 
-app.use('/reports', express.static('public/tmp/csv'));
-
 const schema = require('./configs/graphql_schema');
 app.use('/graphql', graphqlHTTP({ schema, graphiql: true }));
 
