@@ -5,8 +5,9 @@ const {
 const fs = require('fs');
 const moment = require('moment');
 const bunyam = require('bunyan');
-const jsonExporter = require('jsonexport');
 const routes = require('express').Router();
+const reportExporter = require('export-from-json');
+const { response } = require('express');
 
 const log = bunyam.createLogger({
     name: 'Credits',
@@ -22,17 +23,28 @@ const log = bunyam.createLogger({
     ]
 });
 
-routes.post('/generate-csv', async (req, res, next) => {
-    try {
-        jsonExporter(req.body, (error, csv) => {
-            if (error) return log.error(error);
-            const reportName = `${moment().format()}-relatorio.csv`;
-            fs.writeFileSync(`./public/tmp/csv/${reportName}`, csv);
-            return res.status(200).send({ reportUrl: `${BACKEND_URL}/reports/${reportName}` });
-        });
-    } catch(trace) {
-        return res.status(400).send({ trace })
-    }
+routes.post('/generate-report', async (req, res, next) => {
+    const exportType = req.query.type;
+    if (!exportType) return res.status(400).send({ error: "Report type is required." });
+    const report = reportExporter({
+        data: req.body,
+        fileName: `relatorio-${moment().format()}`,
+        exportType,
+        processor (content, type, fileName) {
+            switch (type) {
+                case 'csv':
+                    res.setHeader('Content-Type', 'text/csv');
+                    break;
+                case 'xls':
+                    res.setHeader('Content-Type', 'application/ms-excel');
+                    break;
+            }
+            res.setHeader('Content-Disposition', `attachment; filename=${fileName}`);
+            return content;
+        }
+    });
+    res.write(report);
+    res.end();
 });
 
 module.exports = app => app.use('/credits', routes);

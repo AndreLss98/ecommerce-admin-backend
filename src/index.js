@@ -22,7 +22,8 @@ const hostsWhiteList = [
 app.use(helmet());
 app.use(cors({
     credentials: true,
-    allowedHeaders: 'Content-Type, Authorization, Access-Control-Allow-Credentials',
+    allowedHeaders: 'Content-Type, Authorization, Access-Control-Allow-Credentials, Content-Disposition',
+    exposedHeaders: 'Content-Disposition',
     origin: function (origin, callback) {
         if (hostsWhiteList.indexOf(origin) !== -1 || !origin) {
             callback(null, true);
