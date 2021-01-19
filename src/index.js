@@ -1,7 +1,8 @@
 require('dotenv').config();
 
 const { 
-    PORT
+    PORT,
+    ENV
 } = process.env;
 
 const fs = require('fs');
@@ -32,10 +33,11 @@ app.use(cors({
         }
     }
 }));
+
 app.use(cookieParser());
 
 const schema = require('./configs/graphql_schema');
-app.use('/graphql', graphqlHTTP({ schema, graphiql: true }));
+app.use('/graphql', graphqlHTTP({ schema, graphiql: ENV === 'dev'? true : false }));
 
 app.use(bodyParser.json({
     verify: (req, res, buffer, enconding) => {

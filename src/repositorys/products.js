@@ -1,3 +1,8 @@
+const {
+    SHOPIFY_PRIVATE_APP_API_KEY,
+    SHOPIFY_PRIVATE_APP_PASSWORD
+} = process.env;
+
 const axios = require('axios');
 const db = require('./../configs/knex');
 
@@ -66,10 +71,45 @@ async function checkPurchase(Customer, ItemID) {
     }
 }
 
+async function getMetafields(id) {
+    try {
+        return await axios({
+            method: 'get',
+            url: `https://${SHOPIFY_PRIVATE_APP_API_KEY}:${SHOPIFY_PRIVATE_APP_PASSWORD}@leno-fx.myshopify.com/admin/api/2021-01/products/${id}/metafields.json`
+        }).then(async (response) => {
+            let { metafields } = response.data;
+            return metafields;
+        }, (error) => {
+            throw { error: error.response.data, status: error.response.status };
+        });
+    } catch (error) {
+        throw error;
+    }
+}
+
+async function getById(ProductID) {
+    try {
+        return await db(TABLE).where({ ProductID }).first();
+    } catch (error) {
+        throw error;
+    }
+}
+
+async function getAll() {
+    try {
+        return await db(TABLE);
+    } catch (eror) {
+        throw error;
+    }
+}
+
 module.exports = {
+    getAll,
+    getById,
     getBundle,
     saveBundles,
     checkPurchase,
+    getMetafields,
     updateFromWebHook,
-    getProductsOfBundle
+    getProductsOfBundle,
 }

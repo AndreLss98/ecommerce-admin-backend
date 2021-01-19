@@ -6,10 +6,12 @@ const {
     GraphQLSchema,
     GraphQLNonNull,
     GraphQLObjectType,
+    GraphQLID,
 } = require('graphql');
 
 const UserRepo = require('./../repositorys/user');
 const CreditRepo = require('./../repositorys/credits');
+const ProductRepo = require('./../repositorys/products');
 const DownloadUrlRepo = require('./../repositorys/download_url');
 
 const User = new GraphQLObjectType({
@@ -84,6 +86,51 @@ const DownloadUrls = new GraphQLObjectType({
     })
 });
 
+const ProductMetaField = new GraphQLObjectType({
+    name: 'ProductMetaField',
+    fields: () => ({
+        id: {
+            type: GraphQLID
+        },
+        key: {
+            type: GraphQLString
+        },
+        value: {
+            type: GraphQLString
+        },
+        namespace: {
+            type: GraphQLString
+        }
+    })
+})
+
+const Product = new GraphQLObjectType({
+    name: "Plugin",
+    fields: () => ({
+        ProductID: {
+            type: GraphQLFloat
+        },
+        Handle: {
+            type: GraphQLString
+        },
+        RetailPrice: {
+            type: GraphQLFloat
+        },
+        Title: {
+            type: GraphQLString
+        },
+        Version: {
+            type: GraphQLString
+        },
+        metafields: {
+            type: new GraphQLList(ProductMetaField),
+            resolve({ ProductID }, _) {
+                return ProductRepo.getMetafields(ProductID);
+            }
+        }
+    })
+});
+
 const schema = new GraphQLSchema({
     query: new GraphQLObjectType({
         name: "RootQueryType",
@@ -114,6 +161,23 @@ const schema = new GraphQLSchema({
                 },
                 resolve(_, args) {
                     return CreditRepo.getAllInInteval(args.start, args.end, args.itemID);
+                }
+            },
+            product: {
+                type: Product,
+                args: {
+                    id: {
+                        type: new GraphQLNonNull(GraphQLID)
+                    }
+                },
+                resolve(_, args) {
+                    return ProductRepo.getById(args.id);
+                }
+            },
+            products: {
+                type: new GraphQLList(Product),
+                resolve(_, args) {
+                    return ProductRepo.getAll();
                 }
             }
         }

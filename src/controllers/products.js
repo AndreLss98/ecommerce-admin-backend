@@ -13,6 +13,16 @@ router.get('/bundle/:handle', async (req, res, next) => {
     return res.status(200).send(await ProductsRepository.getBundle(req.params.handle));
 });
 
+router.get('/metafields', authMiddleware(), async (req, res, next) => {
+    const id = parseInt(req.query.id);
+    
+    try {
+        return res.status(200).send(await ProductsRepository.getMetafields(id));
+    } catch(trace) {
+        return res.status(400).send({ error: "Get metafield error", trace });
+    }
+});
+
 router.post('/bundle', authMiddleware(), async (req, res, next) => {
     const { BundleID, Products } = req.body;
     ProductsRepository.saveBundles(BundleID, Products);
