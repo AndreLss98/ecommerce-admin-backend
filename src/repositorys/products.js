@@ -54,7 +54,7 @@ async function saveBundles(BundleProductID, Products) {
     }
 }
 
-async function updateFromWebHook(ProductID, Product) {
+async function update(ProductID, Product) {
     try {
         return await db(TABLE).update(Product).where({ ProductID });
     } catch (error) {
@@ -105,11 +105,11 @@ async function getAll() {
 
 module.exports = {
     getAll,
+    update,
     getById,
     getBundle,
     saveBundles,
     checkPurchase,
     getMetafields,
-    updateFromWebHook,
     getProductsOfBundle,
 }

@@ -1,3 +1,5 @@
+const { SHOPIFY_PRIVATE_APP_API_KEY, SHOPIFY_PRIVATE_APP_PASSWORD } = process.env;
+const axios = require('axios');
 const router = require('express').Router();
 
 const webhookAuth = require('./../middlewares/webhookAuth');
@@ -23,6 +25,70 @@ router.get('/metafields', authMiddleware(), async (req, res, next) => {
     }
 });
 
+router.post('/metafields/:id', authMiddleware(), async (req, res, next) => {
+    const id = parseInt(req.params.id);
+    const { version, logs } = req.body;
+    
+    let response;
+    try {
+        if (logs) {
+            if (!logs.id) {
+                const metafield = {
+                    namespace: "history-log",
+                    key: "log",
+                    value: logs.value,
+                    value_type: "string"
+                }
+    
+                await axios({
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    url: `https://${SHOPIFY_PRIVATE_APP_API_KEY}:${SHOPIFY_PRIVATE_APP_PASSWORD}@leno-fx.myshopify.com/admin/api/2021-01/products/${id}/metafields.json`,
+                    data: JSON.stringify({ metafield })
+                }).then(async (res) => {
+                    response = res.data;
+                }, (error) => {
+                    throw { error: error.response.data, status: error.response.status };
+                });
+            } else {
+                const metafield = {
+                    id: logs.id,
+                    value: logs.value,
+                    value_type: "string"
+                }
+    
+                await axios({
+                    method: 'put',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    url: `https://${SHOPIFY_PRIVATE_APP_API_KEY}:${SHOPIFY_PRIVATE_APP_PASSWORD}@leno-fx.myshopify.com/admin/api/2021-01/products/${id}/metafields/${logs.id}.json`,
+                    data: JSON.stringify({ metafield })
+                }).then(async (res) => {
+                    response = res.data;
+                }, (error) => {
+                    throw { error: error.response.data, status: error.response.status };
+                });
+            }
+        }
+
+        if (version) {
+            await ProductsRepository.update(id, { Version: version });
+            response = { ...response, version };
+        }
+    } catch(trace) {
+        return res.status(400).send({
+            err: "Error save metafields",
+            trace
+        })
+    }
+
+    return res.status(200).send(response);
+});
+
+
 router.post('/bundle', authMiddleware(), async (req, res, next) => {
     const { BundleID, Products } = req.body;
     ProductsRepository.saveBundles(BundleID, Products);
@@ -31,7 +97,7 @@ router.post('/bundle', authMiddleware(), async (req, res, next) => {
 
 router.post('/webhook/product-update', webhookAuth(), async (req, res, next) => {
     const { id, title, handle, variants } = req.body;
-    await ProductsRepository.updateFromWebHook(id, { Title: title, Handle: handle, RetailPrice: variants[0].price });
+    await ProductsRepository.update(id, { Title: title, Handle: handle, RetailPrice: variants[0].price });
     return res.status(200).send({ response: 'Webhook notificado com sucesso.' });
 });
 
