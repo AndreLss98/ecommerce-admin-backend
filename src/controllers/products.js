@@ -32,7 +32,7 @@ router.post('/metafields/:id', authMiddleware(), async (req, res, next) => {
     let response;
     try {
         if (logs) {
-            if (!logs.id) {
+            if (!logs.id && logs.value) {
                 const metafield = {
                     namespace: "history-log",
                     key: "log",
@@ -52,7 +52,7 @@ router.post('/metafields/:id', authMiddleware(), async (req, res, next) => {
                 }, (error) => {
                     throw { error: error.response.data, status: error.response.status };
                 });
-            } else {
+            } else if (logs.id && logs.value) {
                 const metafield = {
                     id: logs.id,
                     value: logs.value,
@@ -76,7 +76,7 @@ router.post('/metafields/:id', authMiddleware(), async (req, res, next) => {
 
         if (version) {
             await ProductsRepository.update(id, { Version: version });
-            response = { ...response, version };
+            response = { ...response, version, UpgradedVersionAt: new Date() };
         }
     } catch(trace) {
         return res.status(400).send({

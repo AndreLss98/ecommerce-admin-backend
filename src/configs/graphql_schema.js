@@ -1,4 +1,5 @@
 const {
+    GraphQLID,
     GraphQLInt,
     GraphQLList,
     GraphQLFloat,
@@ -6,7 +7,6 @@ const {
     GraphQLSchema,
     GraphQLNonNull,
     GraphQLObjectType,
-    GraphQLID,
 } = require('graphql');
 
 const UserRepo = require('./../repositorys/user');
@@ -120,6 +120,9 @@ const Product = new GraphQLObjectType({
             type: GraphQLString
         },
         Version: {
+            type: GraphQLString
+        },
+        UpgradedVersionAt: {
             type: GraphQLString
         },
         metafields: {
