@@ -1,4 +1,4 @@
-const { INDECX_API_KEY } = process.env;
+const { INDECX_API_KEY, INDECX_SEND_NPS_DAYS } = process.env;
 
 const axios = require('axios');
 const moment = require('moment');
@@ -38,7 +38,7 @@ function setLocaleTimeOfAction(city_name, province_code, country_code) {
     
     let currentDate = moment().add(1, 'days');
     
-    for (let qtdDias = 1; qtdDias < 5; null) {
+    for (let qtdDias = 1; qtdDias < parseInt(INDECX_SEND_NPS_DAYS); null) {
         currentDate.add(1, 'day');
         if (currentDate.day() !== 0 && currentDate.day() !== 6) {
             ++qtdDias;
