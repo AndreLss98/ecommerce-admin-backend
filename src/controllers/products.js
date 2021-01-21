@@ -119,4 +119,18 @@ router.post('/validate-purchase', async (req, res, next) => {
     }
 });
 
+/**
+ * Endpoint para o site pode validar a versao atual do plugin
+ */
+router.get('/:id/version', async (req, res, next) => {
+    const id = parseInt(req.params.id);
+
+    try {
+        const product = await ProductsRepository.getById(id);
+        return res.status(200).send({ version: product.Version });
+    } catch (trace) {
+        return res.status(400).send({ err: "Error get product version", trace });
+    }
+});
+
 module.exports = app => app.use('/products', router);
