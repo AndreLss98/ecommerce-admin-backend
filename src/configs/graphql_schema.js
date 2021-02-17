@@ -59,6 +59,9 @@ const CreditLog = new GraphQLObjectType({
         UsageDate: {
             type: GraphQLString
         },
+        ItemID: {
+            type: GraphQLString
+        },
         Customer: {
             type: User,
             resolve({ CustomerID }, _) {
