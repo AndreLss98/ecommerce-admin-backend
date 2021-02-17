@@ -54,5 +54,9 @@ app.listen(PORT, () => {
         fs.mkdirSync('./public/tmp/csv/', { recursive: true });
     }
 
+    if (!fs.existsSync('/var/')) {
+        fs.mkdirSync('/var/tmp', { recursive: true });
+    }
+
     console.log(`App listen on port ${PORT}`);
 });
