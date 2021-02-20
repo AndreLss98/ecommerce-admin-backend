@@ -41,16 +41,14 @@ router.post('/webhook/order-create', async (req, res, next) => {
                         customer.id,
                         subProduct.ProductID, id,
                         subProduct.Title,
-                        product.product_id, 0,
-                        user.Subscriber);
+                        product.product_id, 0);
                 }
             } else {
                 await OrderRepository.registerOrder(
                     customer.id,
                     product.product_id, id,
                     product.title,
-                    product.product_id, 0,
-                    user.Subscriber);
+                    product.product_id, 0);
             }
         }
     } catch (trace) {

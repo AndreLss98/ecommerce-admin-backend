@@ -8,7 +8,7 @@ async function getAllByUserId(Customer) {
     return await db(TABLE).where({ Customer });
 }
 
-async function registerOrder(Customer, ItemID, OrderID, ItemTitle, ItemNumber, CreditsUsed = 0, MemberLevel) {
+async function registerOrder(Customer, ItemID, OrderID, ItemTitle, ItemNumber, CreditsUsed = 0) {
 
     try {
         await db(TABLE).insert({
@@ -19,8 +19,7 @@ async function registerOrder(Customer, ItemID, OrderID, ItemTitle, ItemNumber, C
             ItemTitle,
             ItemNumber,
             OrderDate: knex.fn.now(),
-            CreditsUsed,
-            MemberLevel
+            CreditsUsed
         });
     } catch (error) {
         throw error;
