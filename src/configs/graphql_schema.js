@@ -7,12 +7,14 @@ const {
     GraphQLSchema,
     GraphQLNonNull,
     GraphQLObjectType,
+    GraphQLEnumType
 } = require('graphql');
 
 const UserRepo = require('./../repositorys/user');
 const CreditRepo = require('./../repositorys/credits');
 const ProductRepo = require('./../repositorys/products');
 const DownloadUrlRepo = require('./../repositorys/download_url');
+const { isGraphQLEnumExtension } = require('@graphql-tools/merge');
 
 const User = new GraphQLObjectType({
     name: "Usuario",
@@ -85,6 +87,9 @@ const DownloadUrls = new GraphQLObjectType({
         },
         Used: {
             type: GraphQLInt
+        },
+        OrderData: {
+            type: GraphQLInt
         }
     })
 });
@@ -138,6 +143,10 @@ const Product = new GraphQLObjectType({
 });
 
 const schema = new GraphQLSchema({
+    query: ``,
+    resolver: {
+      Query: {},
+    },
     query: new GraphQLObjectType({
         name: "RootQueryType",
         fields: {
@@ -150,6 +159,27 @@ const schema = new GraphQLSchema({
                 },
                 resolve(_, args) {
                     return UserRepo.getByEmail(args.CustomerEmail);
+                }
+            },
+            count: {
+                type: GraphQLString,
+                args: {},
+                resolve(_, __){
+                    return UserRepo.getCount();
+                }
+            },
+            users: {
+                type: GraphQLList(User),
+                args: {
+                    pageNumber: {
+                        type: new GraphQLNonNull(GraphQLInt)
+                    },
+                    limit: {
+                        type: new GraphQLNonNull(GraphQLInt)
+                    }
+                },
+                resolve(_, args) {
+                    return UserRepo.getAll(args.pageNumber,args.limit);
                 }
             },
             credits: {
