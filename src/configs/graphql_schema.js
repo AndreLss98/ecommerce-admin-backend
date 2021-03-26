@@ -14,6 +14,37 @@ const CreditRepo = require('./../repositorys/credits');
 const ProductRepo = require('./../repositorys/products');
 const DownloadUrlRepo = require('./../repositorys/download_url');
 
+async function paginator(mainQuery, getTotalItemsQuery, pageNumber, pageSize) {
+    const totalItems = await getTotalItemsQuery();
+    const data = await mainQuery(pageNumber, pageSize);
+    return {
+        data,
+        totalItems,
+        nextPage: pageNumber < totalItems / pageSize? pageNumber + 1 : null,
+        previousPage: pageNumber > 1? pageNumber - 1 : null
+    }
+}
+
+const Paginator = (dataType) => {
+    return new GraphQLObjectType({
+        name: 'Paginator',
+        fields: () => ({
+            previousPage: {
+                type: GraphQLInt
+            },
+            nextPage: {
+                type: GraphQLInt
+            },
+            totalItems: {
+                type: GraphQLInt
+            },
+            data: {
+                type: new GraphQLList(dataType)
+            }
+        })
+    })
+}
+
 const User = new GraphQLObjectType({
     name: "Usuario",
     fields: () => ({
@@ -155,15 +186,8 @@ const schema = new GraphQLSchema({
                     return UserRepo.getByEmail(args.CustomerEmail);
                 }
             },
-            count: {
-                type: GraphQLString,
-                args: {},
-                resolve(_, __){
-                    return UserRepo.getCount();
-                }
-            },
             users: {
-                type: new GraphQLList(User),
+                type: Paginator(User),
                 args: {
                     pageNumber: {
                         type: new GraphQLNonNull(GraphQLInt)
@@ -172,8 +196,8 @@ const schema = new GraphQLSchema({
                         type: new GraphQLNonNull(GraphQLInt)
                     }
                 },
-                resolve(_, args) {
-                    return UserRepo.getAll(args.pageNumber,args.limit);
+                resolve(_, { pageNumber, limit }) {
+                    return paginator(UserRepo.getAll, UserRepo.getCount, pageNumber, limit);
                 }
             },
             credits: {

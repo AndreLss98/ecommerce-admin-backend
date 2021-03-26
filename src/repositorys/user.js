@@ -14,7 +14,7 @@ async function getAll(pageNumber, limitAll){
 }
 
 async function getCount() {
-    return await db(TABLE).count();
+    return (await db(TABLE).count('*', { as: 'totalItems' }).first()).totalItems;
 }
 
 async function search(search_key) {

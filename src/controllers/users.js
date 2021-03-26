@@ -10,10 +10,6 @@ routes.get('/:email', async (req, res, next) => {
     return res.status(200).send(user);
 });
 
-routes.get('/', async(req, res, next)=>{ 
-    return res.status(200).send(await Users.getCount());
-});
-
 routes.put('/credits/:CustomerID', authMiddleware(), async(req, res, next) => {
     const { CustomerID } = req.params;
     const { Credits } = req.body;
