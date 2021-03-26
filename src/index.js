@@ -1,3 +1,14 @@
+const program = require('commander');
+
+program.version('1.0.0')
+    .option('-d, --development', 'Run in development mode, is default mode.')
+    .option('-p, --production', 'Run in production mode')
+    .parse(process.argv);
+
+const options = program.opts();
+
+process.env.ENV = options.production? 'prod' : 'dev';
+
 require('dotenv').config();
 
 const { 
@@ -37,7 +48,7 @@ app.use(cors({
 app.use(cookieParser());
 
 const schema = require('./configs/graphql_schema');
-app.use('/graphql', graphqlHTTP({ schema, graphiql: ENV === 'dev'? true : false }));
+app.use('/graphql', graphqlHTTP({ schema, graphiql: ENV === 'dev' }));
 
 app.use(bodyParser.json({
     verify: (req, res, buffer, enconding) => {
@@ -58,5 +69,5 @@ app.listen(PORT, () => {
         fs.mkdirSync('/var/tmp', { recursive: true });
     }
 
-    console.log(`App listen on port ${PORT}`);
+    console.log(`App listen on port ${PORT} in ${ options.production? 'production' : 'development' } mode.`);
 });

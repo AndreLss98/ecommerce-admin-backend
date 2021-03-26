@@ -5,8 +5,8 @@
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node src/index.js",
-    "dev": "nodemon src/index.js"
+    "start": "node src/index.js -p",
+    "dev": "nodemon src/index.js -- -d"
   },
   "author": "André Luís da Silva",
   "license": "ISC",
@@ -19,6 +19,7 @@
     "body-parser": "^1.19.0",
     "bunyan": "^1.8.14",
     "city-timezones": "^1.2.0",
+    "commnader": "0.0.1-security",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "countries-and-timezones": "^2.3.1",
