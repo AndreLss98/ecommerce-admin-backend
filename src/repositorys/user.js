@@ -8,10 +8,12 @@ const ADMIN_TABLE = 'AdminUser';
 async function getByEmail(CustomerEmail) {
     return await db(TABLE).where({ CustomerEmail }).first();
 }
+
 async function getAll(pageNumber, limitAll){
     return await db(TABLE).offset((pageNumber * limitAll) - limitAll).limit(limitAll);
 }
-async function getCount(){
+
+async function getCount() {
     return await db(TABLE).count();
 }
 
@@ -46,9 +48,9 @@ async function setCreditsOfUser(CustomerID, Credits) {
 module.exports = {
     getAll,
     search,
+    getCount,
     getByEmail,
     getAdminUser,
     saveAdminUser,
     setCreditsOfUser,
-    getCount
 }

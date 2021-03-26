@@ -6,15 +6,13 @@ const {
     GraphQLString,
     GraphQLSchema,
     GraphQLNonNull,
-    GraphQLObjectType,
-    GraphQLEnumType
+    GraphQLObjectType
 } = require('graphql');
 
 const UserRepo = require('./../repositorys/user');
 const CreditRepo = require('./../repositorys/credits');
 const ProductRepo = require('./../repositorys/products');
 const DownloadUrlRepo = require('./../repositorys/download_url');
-const { isGraphQLEnumExtension } = require('@graphql-tools/merge');
 
 const User = new GraphQLObjectType({
     name: "Usuario",
@@ -143,10 +141,6 @@ const Product = new GraphQLObjectType({
 });
 
 const schema = new GraphQLSchema({
-    query: ``,
-    resolver: {
-      Query: {},
-    },
     query: new GraphQLObjectType({
         name: "RootQueryType",
         fields: {
@@ -169,7 +163,7 @@ const schema = new GraphQLSchema({
                 }
             },
             users: {
-                type: GraphQLList(User),
+                type: new GraphQLList(User),
                 args: {
                     pageNumber: {
                         type: new GraphQLNonNull(GraphQLInt)
