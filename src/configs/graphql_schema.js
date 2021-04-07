@@ -52,7 +52,7 @@ const User = new GraphQLObjectType({
             type: GraphQLInt
         },
         ShopifyCustomerNumber: {
-            type: GraphQLInt
+            type: GraphQLString
         },
         CustomerName: {
             type: GraphQLString
@@ -105,6 +105,9 @@ const CreditLog = new GraphQLObjectType({
 const DownloadUrls = new GraphQLObjectType({
     name: "DownloadUrl",
     fields: () => ({
+        ItemID: {
+            type: GraphQLString
+        },
         ItemTitle: {
             type: GraphQLString
         },

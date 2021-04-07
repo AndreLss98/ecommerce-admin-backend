@@ -2,7 +2,6 @@ const { v4: uuidv4 } = require('uuid');
 const knex = require('./../configs/knex');
 const db = require('./../configs/knex');
 
-const TABLE = 'DownloadLinks';
 const { TABLES_NAME } = require('./../shared/constantes');
 
 async function getAllByUserId(Customer) {
@@ -10,7 +9,6 @@ async function getAllByUserId(Customer) {
 }
 
 async function registerOrder(Customer, ItemID, OrderID, ItemTitle, ItemNumber, CreditsUsed = 0) {
-
     try {
         await db(TABLES_NAME.DOWNLOAD_LINKS).insert({
             LinkGuid: uuidv4(),
@@ -41,8 +39,13 @@ async function deleteByLinkID(LinkID) {
     }
 }
 
+async function alterPluginFromLink(LinkID, newPlugin) {
+    return await db(TABLES_NAME.DOWNLOAD_LINKS).update({ ItemID: newPlugin.id, ItemTitle: newPlugin.title }).where({ LinkID });
+}
+
 module.exports = {
     registerOrder,
     deleteByLinkID,
     getAllByUserId,
+    alterPluginFromLink,
 }
