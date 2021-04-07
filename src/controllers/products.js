@@ -95,6 +95,9 @@ router.post('/bundle', authMiddleware(), async (req, res, next) => {
     return res.status(200).send({ response: 'Ok' });
 });
 
+/**
+ * ToDo: Remove this endpoint. Moved to Appconnect
+ */
 router.post('/webhook/product-update', webhookAuth(), async (req, res, next) => {
     const { id, title, handle, variants } = req.body;
     await ProductsRepository.update(id, { Title: title, Handle: handle, RetailPrice: variants[0].price });
@@ -103,6 +106,7 @@ router.post('/webhook/product-update', webhookAuth(), async (req, res, next) => 
 
 /**
  * Check if a user already purchase a plugin
+ * ToDo: Remove this endpoint. Moved to Appconnect
  */
 router.post('/validate-purchase', async (req, res, next) => {
     const { Customer, ItemID } = req.body;

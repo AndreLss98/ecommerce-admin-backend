@@ -108,6 +108,9 @@ const DownloadUrls = new GraphQLObjectType({
         ItemTitle: {
             type: GraphQLString
         },
+        LinkID: {
+            type: GraphQLInt
+        },
         LinkGuid: {
             type: GraphQLString
         },
@@ -117,8 +120,8 @@ const DownloadUrls = new GraphQLObjectType({
         Used: {
             type: GraphQLInt
         },
-        OrderData: {
-            type: GraphQLInt
+        OrderDate: {
+            type: GraphQLString
         }
     })
 });
