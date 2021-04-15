@@ -8,7 +8,7 @@ async function getAllByUserId(Customer) {
     return await db(TABLES_NAME.DOWNLOAD_LINKS).where({ Customer });
 }
 
-async function registerOrder(Customer, ItemID, OrderID, ItemTitle, ItemNumber, CreditsUsed = 0) {
+async function add(Customer, ItemID, OrderID, ItemTitle, ItemNumber, CreditsUsed = 0) {
     try {
         await db(TABLES_NAME.DOWNLOAD_LINKS).insert({
             LinkGuid: uuidv4(),
@@ -44,7 +44,7 @@ async function alterPluginFromLink(LinkID, newPlugin) {
 }
 
 module.exports = {
-    registerOrder,
+    add,
     deleteByLinkID,
     getAllByUserId,
     alterPluginFromLink,

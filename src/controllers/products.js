@@ -2,7 +2,6 @@ const { SHOPIFY_PRIVATE_APP_API_KEY, SHOPIFY_PRIVATE_APP_PASSWORD } = process.en
 const axios = require('axios');
 const router = require('express').Router();
 
-const webhookAuth = require('./../middlewares/webhookAuth');
 const authMiddleware = require('./../middlewares/authentication');
 
 const ProductsRepository = require('./../repositorys/products');
@@ -88,39 +87,10 @@ router.post('/metafields/:id', authMiddleware(), async (req, res, next) => {
     return res.status(200).send(response);
 });
 
-
 router.post('/bundle', authMiddleware(), async (req, res, next) => {
     const { BundleID, Products } = req.body;
     ProductsRepository.saveBundles(BundleID, Products);
     return res.status(200).send({ response: 'Ok' });
-});
-
-/**
- * ToDo: Remove this endpoint. Moved to Appconnect
- */
-router.post('/webhook/product-update', webhookAuth(), async (req, res, next) => {
-    const { id, title, handle, variants } = req.body;
-    await ProductsRepository.update(id, { Title: title, Handle: handle, RetailPrice: variants[0].price });
-    return res.status(200).send({ response: 'Webhook notificado com sucesso.' });
-});
-
-/**
- * Check if a user already purchase a plugin
- * ToDo: Remove this endpoint. Moved to Appconnect
- */
-router.post('/validate-purchase', async (req, res, next) => {
-    const { Customer, ItemID } = req.body;
-
-    try {
-        return res.status(200).send({
-            response: await ProductsRepository.checkPurchase(Customer, ItemID)
-        });
-    } catch (trace) {
-        return res.status(400).send({
-            message: "Error on validate purchase",
-            trace
-        })
-    }
 });
 
 /**

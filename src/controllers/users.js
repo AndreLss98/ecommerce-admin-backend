@@ -25,7 +25,7 @@ routes.post('/plugins/:id', async (req, res, next) => {
     CustomerID = parseInt(CustomerID);
     try {
         const product = await ProductRepository.getById(id);
-        await DownloadLinksRepository.registerOrder(CustomerID, id, null, product.Title, id, 0);
+        await DownloadLinksRepository.add(CustomerID, id, null, product.Title, id, 0);
         return res.status(201).send({ message: "Plugin inserido na conta do usuário." });
     } catch(error) {
         return res.status(400).send({ message: "Erro ao inserir plugin na conta do usuário ", error });
