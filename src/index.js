@@ -1,3 +1,4 @@
+const { ENVS } = require('./shared/constantes');
 const program = require('commander');
 
 program.version('1.0.0')
@@ -7,13 +8,13 @@ program.version('1.0.0')
 
 const options = program.opts();
 
-process.env.ENV = options.production? 'prod' : 'dev';
+process.env.ENV = options.production? ENVS.PROD : ENVS.DEV;
 
 require('dotenv').config();
 
 const { 
+    ENV,
     PORT,
-    ENV
 } = process.env;
 
 const fs = require('fs');

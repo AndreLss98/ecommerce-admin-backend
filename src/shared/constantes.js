@@ -3,6 +3,12 @@ const TABLES_NAME = {
     CREDITS_USAGE_LOG: 'CreditUsageLog'
 }
 
+const ENVS = {
+    PROD: 'prod',
+    DEV: 'dev'
+}
+
 module.exports = {
+    ENVS,
     TABLES_NAME
 }
