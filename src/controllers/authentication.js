@@ -5,8 +5,8 @@ const authentication = require('./../middlewares/authentication');
 const authFunctions = require('./../shared/authentication');
 
 const {
-    SESS_ID,
     ENV,
+    SESS_ID,
     SESS_LIFETIME
 } = process.env;
 
