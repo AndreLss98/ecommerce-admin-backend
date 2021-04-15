@@ -7,15 +7,6 @@ const DownloadLinksRepository = require('./../repositorys/download_url');
 
 const authMiddleware = require('./../middlewares/authentication');
 
-/**
- * ToDo: Check if can remove this endpoint
- */
-routes.get('/:email', async (req, res, next) => {
-    const user = await Users.getByEmail(req.params.email);  
-    if (!user) return res.status(404).send({ error: "User not found" });
-    return res.status(200).send(user);
-});
-
 routes.put('/credits/:CustomerID', authMiddleware(), async(req, res, next) => {
     const { CustomerID } = req.params;
     const { Credits } = req.body;
