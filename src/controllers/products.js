@@ -1,5 +1,7 @@
 const { SHOPIFY_PRIVATE_APP_API_KEY, SHOPIFY_PRIVATE_APP_PASSWORD } = process.env;
 const axios = require('axios');
+const multer = require('multer');
+const multerConfig = require('./../configs/multerConfig');
 const router = require('express').Router();
 
 const authMiddleware = require('./../middlewares/authentication');
@@ -46,8 +48,8 @@ router.post('/metafields/:id', authMiddleware(), async (req, res, next) => {
                     },
                     url: `https://${SHOPIFY_PRIVATE_APP_API_KEY}:${SHOPIFY_PRIVATE_APP_PASSWORD}@leno-fx.myshopify.com/admin/api/2021-01/products/${id}/metafields.json`,
                     data: JSON.stringify({ metafield })
-                }).then(async (res) => {
-                    response = res.data;
+                }).then(async (data) => {
+                    response = data.data;
                 }, (error) => {
                     throw { error: error.response.data, status: error.response.status };
                 });
@@ -65,8 +67,8 @@ router.post('/metafields/:id', authMiddleware(), async (req, res, next) => {
                     },
                     url: `https://${SHOPIFY_PRIVATE_APP_API_KEY}:${SHOPIFY_PRIVATE_APP_PASSWORD}@leno-fx.myshopify.com/admin/api/2021-01/products/${id}/metafields/${logs.id}.json`,
                     data: JSON.stringify({ metafield })
-                }).then(async (res) => {
-                    response = res.data;
+                }).then(async (data) => {
+                    response = data.data;
                 }, (error) => {
                     throw { error: error.response.data, status: error.response.status };
                 });
@@ -105,6 +107,10 @@ router.get('/:id/version', async (req, res, next) => {
     } catch (trace) {
         return res.status(400).send({ err: "Error get product version", trace });
     }
+});
+
+router.post('/upload-file', multer(multerConfig()).single('file'), async (req, res, next) => {
+    return res.status(200).send({ response: "Ola" });
 });
 
 module.exports = app => app.use('/products', router);
