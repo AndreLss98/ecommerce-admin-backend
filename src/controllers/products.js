@@ -109,8 +109,20 @@ router.get('/:id/version', async (req, res, next) => {
     }
 });
 
-router.post('/upload-file', multer(multerConfig()).single('file'), async (req, res, next) => {
-    return res.status(200).send({ response: "Ola" });
+
+/**
+ * Send files to s3 and update filename
+ */
+router.post('/upload-file/:id', multer(multerConfig()).single('file'), async (req, res, next) => {
+    const id = parseInt(req.params.id);
+    if (!id) return res.status(400).send({ message: "Id is required" });
+
+    try {
+        await ProductsRepository.update(id, { FileName: req.file.originalname });
+        return res.status(200).send({ message: "File save" });
+    } catch(error) {
+        return res.status(400).send({ message: "Erro save file", error });
+    }
 });
 
 module.exports = app => app.use('/products', router);
