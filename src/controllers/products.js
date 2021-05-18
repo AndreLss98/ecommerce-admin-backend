@@ -116,7 +116,7 @@ router.get('/:id/version', async (req, res, next) => {
 router.post('/upload-file/:id', multer(multerConfig()).single('file'), async (req, res, next) => {
     const id = parseInt(req.params.id);
     if (!id) return res.status(400).send({ message: "Id is required" });
-
+    
     try {
         await ProductsRepository.update(id, { FileName: req.file.originalname });
         return res.status(200).send({ message: "File save" });

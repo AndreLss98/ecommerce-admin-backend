@@ -34,8 +34,9 @@ const STORAGE_TYPE = {
                 contentType: multerS3.AUTO_CONTENT_TYPE,
                 acl: 'private',
                 key: (req, file, cb) => {
-                    cb(null, file.originalname)
-                }
+                    cb(null, file.originalname);
+                },
+                size: 500000000
             });
         } catch(error) {
             throw error;
