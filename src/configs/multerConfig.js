@@ -35,8 +35,7 @@ const STORAGE_TYPE = {
                 acl: 'private',
                 key: (req, file, cb) => {
                     cb(null, file.originalname);
-                },
-                size: 500000000
+                }
             });
         } catch(error) {
             throw error;

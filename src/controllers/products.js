@@ -16,7 +16,7 @@ router.get('/bundle/:handle', async (req, res, next) => {
     return res.status(200).send(await ProductsRepository.getBundle(req.params.handle));
 });
 
-router.get('/metafields', authMiddleware(), async (req, res, next) => {
+router.get('/metafields', async (req, res, next) => {
     const id = parseInt(req.query.id);
     
     try {
@@ -26,7 +26,7 @@ router.get('/metafields', authMiddleware(), async (req, res, next) => {
     }
 });
 
-router.post('/metafields/:id', authMiddleware(), async (req, res, next) => {
+router.post('/metafields/:id', async (req, res, next) => {
     const id = parseInt(req.params.id);
     const { version, logs } = req.body;
     
