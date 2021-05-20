@@ -31,7 +31,7 @@ const STORAGE_TYPE = {
             return multerS3({
                 s3,
                 bucket: ENV === ENVS.PROD? AMAZON_S3_BUCKET_PROD : AMAZON_S3_BUCKET_DEV,
-                contentType: multerS3.AUTO_CONTENT_TYPE,
+                contentType: multerS3.DEFAULT_CONTENT_TYPE,
                 acl: 'private',
                 key: (req, file, cb) => {
                     cb(null, file.originalname);
