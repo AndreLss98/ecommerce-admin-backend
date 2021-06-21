@@ -9,12 +9,20 @@ async function getByEmail(CustomerEmail) {
     return await db(TABLE).where({ CustomerEmail }).first();
 }
 
-async function getAll(pageNumber, limitAll){
-    return await db(TABLE).offset((pageNumber * limitAll) - limitAll).limit(limitAll);
+async function getAll(pageNumber, limitAll, args){
+    let query = db(TABLE).offset((pageNumber * limitAll) - limitAll).limit(limitAll);
+    if(args.startDate){
+        return await query.whereBetween('LastAccess', [args.startDate, args.endDate]);
+    } 
+    return await query;
 }
 
-async function getCount() {
-    return (await db(TABLE).count('*', { as: 'totalItems' }).first()).totalItems;
+async function getCount(args) {
+    let query = db(TABLE).count('*', { as: 'totalItems' }).first();
+    if(args.startDate){
+        return (await query.whereBetween('LastAccess', [args.startDate, args.endDate])).totalItems
+    }
+    return (await query).totalItems
 }
 
 async function search(search_key) {

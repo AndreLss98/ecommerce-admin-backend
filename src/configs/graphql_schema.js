@@ -14,9 +14,9 @@ const CreditRepo = require('./../repositorys/credits');
 const ProductRepo = require('./../repositorys/products');
 const DownloadUrlRepo = require('./../repositorys/download_url');
 
-async function paginator(mainQuery, getTotalItemsQuery, pageNumber, pageSize) {
-    const totalItems = await getTotalItemsQuery();
-    const data = await mainQuery(pageNumber, pageSize);
+async function paginator(mainQuery, getTotalItemsQuery, pageNumber, pageSize, args) {
+    const totalItems = await getTotalItemsQuery(args);
+    const data = await mainQuery(pageNumber, pageSize, args);
     return {
         data,
         totalItems,
@@ -62,6 +62,9 @@ const User = new GraphQLObjectType({
         },
         Credits: {
             type: GraphQLInt
+        },
+        LastAccess: {
+            type: GraphQLString
         },
         CreditosUsados: {
             type: new GraphQLList(CreditLog),
@@ -192,6 +195,7 @@ const schema = new GraphQLSchema({
                     return UserRepo.getByEmail(args.CustomerEmail);
                 }
             },
+
             users: {
                 type: Paginator(User),
                 args: {
@@ -200,12 +204,19 @@ const schema = new GraphQLSchema({
                     },
                     limit: {
                         type: new GraphQLNonNull(GraphQLInt)
+                    },
+                    startDate : {
+                        type: GraphQLString
+                    },
+                    endDate : {
+                        type: GraphQLString
                     }
                 },
-                resolve(_, { pageNumber, limit }) {
-                    return paginator(UserRepo.getAll, UserRepo.getCount, pageNumber, limit);
-                }
+                resolve(_, { pageNumber, limit , startDate, endDate }) {
+                    return paginator(UserRepo.getAll, UserRepo.getCount, pageNumber, limit, {startDate, endDate} );
+                },
             },
+
             credits: {
                 type: new GraphQLList(CreditLog),
                 args: {
