@@ -3,6 +3,7 @@ const axios = require('axios');
 const multer = require('multer');
 const multerConfig = require('./../configs/multerConfig');
 const router = require('express').Router();
+const knex = require('./../configs/knex');
 
 const authMiddleware = require('./../middlewares/authentication');
 
@@ -79,6 +80,7 @@ router.post('/metafields/:id', async (req, res, next) => {
             await ProductsRepository.update(id, { Version: version });
             response = { ...response, version, UpgradedVersionAt: new Date() };
         }
+
     } catch(trace) {
         return res.status(400).send({
             err: "Error save metafields",
@@ -118,7 +120,7 @@ router.post('/upload-file/:id', multer(multerConfig()).single('file'), async (re
     if (!id) return res.status(400).send({ message: "Id is required" });
     
     try {
-        await ProductsRepository.update(id, { FileName: req.file.originalname });
+        await ProductsRepository.update(id, { FileName: req.file.originalname, UploadFileAt: knex.fn.now()});
         return res.status(200).send({ message: "File save" });
     } catch(error) {
         return res.status(400).send({ message: "Erro save file", error });

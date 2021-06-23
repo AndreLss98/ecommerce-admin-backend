@@ -171,6 +171,9 @@ const Product = new GraphQLObjectType({
         UpgradedVersionAt: {
             type: GraphQLString
         },
+        UploadFileAt: {
+            type: GraphQLString
+        },
         metafields: {
             type: new GraphQLList(ProductMetaField),
             resolve({ ProductID }, _) {

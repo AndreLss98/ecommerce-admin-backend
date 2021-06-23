@@ -57,7 +57,7 @@ async function saveBundles(BundleProductID, Products) {
 
 async function update(ProductID, Product) {
     try {
-        if (Product.Version) Product.UpgradedVersionAt = knex.fn.now();
+        Product.UpgradedVersionAt = knex.fn.now();
         return await db(TABLE).update(Product).where({ ProductID });
     } catch (error) {
         throw error;
