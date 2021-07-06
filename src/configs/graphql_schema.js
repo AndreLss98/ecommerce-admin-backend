@@ -15,14 +15,25 @@ const ProductRepo = require('./../repositorys/products');
 const DownloadUrlRepo = require('./../repositorys/download_url');
 
 async function paginator(mainQuery, getTotalItemsQuery, pageNumber, pageSize, args) {
-    const totalItems = await getTotalItemsQuery(args);
+    let totalItems;
     const data = await mainQuery(pageNumber, pageSize, args);
-    return {
-        data,
-        totalItems,
-        nextPage: pageNumber < totalItems / pageSize? pageNumber + 1 : null,
-        previousPage: pageNumber > 1? pageNumber - 1 : null
+    if(args.topUsers){
+        totalItems = args.topUsers;
+        return {
+            data,
+            totalItems, 
+        }
+    } else {
+        totalItems = await getTotalItemsQuery(args);
+        return {
+            data,
+            totalItems,
+            nextPage: pageNumber < totalItems / pageSize? pageNumber + 1 : null,
+            previousPage: pageNumber > 1? pageNumber - 1 : null
+        }
     }
+    
+
 }
 
 const Paginator = (dataType) => {
@@ -66,6 +77,9 @@ const User = new GraphQLObjectType({
         LastAccess: {
             type: GraphQLString
         },
+        TotalAccessLog: {
+            type: GraphQLInt
+        },
         CreditosUsados: {
             type: new GraphQLList(CreditLog),
             resolve({ ShopifyCustomerNumber }, _) {
@@ -76,6 +90,12 @@ const User = new GraphQLObjectType({
             type: new GraphQLList(DownloadUrls),
             resolve({ ShopifyCustomerNumber }, _) {
                 return DownloadUrlRepo.getAllByUserId(ShopifyCustomerNumber);
+            }
+        },
+        AccessTime: {
+            type: GraphQLInt,
+            resolve({ ShopifyCustomerNumber}, _){
+                return UserRepo.getCountAccess(ShopifyCustomerNumber);
             }
         }
     })
@@ -213,10 +233,13 @@ const schema = new GraphQLSchema({
                     },
                     endDate : {
                         type: GraphQLString
-                    }
+                    },
+                    topUsers: {
+                        type: GraphQLInt
+                    },
                 },
-                resolve(_, { pageNumber, limit , startDate, endDate }) {
-                    return paginator(UserRepo.getAll, UserRepo.getCount, pageNumber, limit, {startDate, endDate} );
+                resolve(_, { pageNumber, limit , startDate, endDate, topUsers }) {
+                    return paginator(UserRepo.getAll, UserRepo.getCount, pageNumber, limit, {startDate, endDate, topUsers} );
                 },
             },
 
